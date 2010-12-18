@@ -33,9 +33,18 @@ if ( $needlogin === false ) {
   } else if ( ( isset($_POST['changepassword'] ) ) && ( $_POST['changepassword'] == "1" ) ) {
     if ( isset($_POST['password1'],$_POST['password2']) && $_POST['password1'] == $_POST['password2'] ) {
       $hash = md5( $salt. $_POST['password1'] );
-      if (!mysql_db_query("blog", "UPDATE TABLE posts SET password=$hash WHERE id=1")) die("Error changing password");
+      if (!mysql_db_query("blog", "UPDATE login SET pword='$hash' WHERE id=1")) die("Error changing password");
+
       $status = "Password changed";
+
+      $_SESSION['loggedin'] = false;
+      $needlogin = true;
     }
+  } else if ( ( isset($_POST['logout'] ) ) && ( $_POST['logout'] == "1" ) ) {
+    $status = "Logged out...";
+
+    $_SESSION['loggedin'] = false;
+    $needlogin = true;
   }
 }
 
@@ -46,7 +55,7 @@ if ( $needlogin === false ) {
   <head><title>Blog Admin Page</title></head>
   <body>
 <?php
-echo $status."<BR>";
+if (isset($status)) echo $status."<BR>";
 
 if ($needlogin === true ) {
 ?>
@@ -71,6 +80,10 @@ if ($needlogin === true ) {
       New password:<input type="password" size="40" name="password1"><BR>
       Confirm password:<input type="password" size="40" name="password2"><BR>
       <input type="submit" value="Change password"><input type="hidden" name="changepassword" value="1">
+    </form>
+    Log out:
+    <form action="admin.php" method="POST">
+      <input type="submit" value="Log Out"><input type="hidden" name="logout" value="1">
     </form>
 <?php
 
