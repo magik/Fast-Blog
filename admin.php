@@ -46,6 +46,8 @@ if ( $needlogin === false ) {
   <head><title>Blog Admin Page</title></head>
   <body>
 <?php
+echo $status."<BR>";
+
 if ($needlogin === true ) {
 ?>
     Please login:
